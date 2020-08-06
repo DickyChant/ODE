@@ -1,4 +1,6 @@
 using Plots
+Plots.scalefontsizes(0.7)
+
 
 # mass, G = 1
 M1 = 1.0
@@ -28,11 +30,11 @@ vz10 = 0.0
 
 vx20 = 0.0
 vy20 = 0.0
-vz20 = -1.0
+vz20 = -0.1
 
-vx30 = -1.0
-vy30 = 1.0
-vz30 = 1.0
+vx30 = -0.1
+vy30 = 0.1
+vz30 = 0.0
 
 function ax(x1,y1,z1,x2,y2,z2,x3,y3,z3,m2,m3)
     r12sq = (x1-x2)^2+(y1-y2)^2+(z1-z2)^2
@@ -143,4 +145,5 @@ for i in 1:nt
 end
 
 Ese = [energy(x1e[i],y1e[i],z1e[i],x2e[i],y2e[i],z2e[i],x3e[i],y3e[i],z3e[i],vx1e[i],vy1e[i],vz1e[i],vx2e[i],vy2e[i],vz2e[i],vx3e[i],vy3e[i],vz3e[i],M1,M2,M3)-e0 for i in 1:(nt+1)]
-plot(ts,Ese,title="Energy Euler")
+plot(ts,Ese,xlabel="time",ylabel="absolute error",title="Energy Euler")
+savefig("GravityE.pdf")
