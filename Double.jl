@@ -12,14 +12,22 @@ m2 = 3.0
 l2 = 5.0
 
 function ddtheta1(theta1,theta2,dtheta1,dtheta2)
-    n = -3*(3*cos(theta1-theta2)*dtheta1*dtheta2*l1^2*m2*sin(theta1-theta2)+2*dtheta1*dtheta2*l1*l2*m2*sin(theta1-theta2)+2*g*l1*m1*sin(theta1)+4*g*l1*m2*sin(theta1)-3*cos(theta1-theta2)*g*l1*m2*sin(theta2))
-    d = (4*l1^2*m1-9*cos(theta1-theta2)^2*l1^2*m2+12*l2^2*m2)
+    d = l1*(m1+m2*sin(theta1-theta2)^2)
+    n1 = g*(m1+m2)*sin(theta1)
+    n2 = cos(theta1-theta2)*dtheta1*dtheta2*l1*m2*sin(theta1-theta2)
+    n3 = dtheta1*dtheta2*l2*m2*sin(theta1-theta2)
+    n4 = -cos(theta1-theta2)*g*m2*sin(theta2)
+    n = -1 * (n1+n2+n3+n4)
     return n/d
 end
 
 function ddtheta2(theta1,theta2,dtheta1,dtheta2)
-    n = 3*(2*dtheta1*dtheta2*l1^3*m1*sin(theta1-theta2)+3*cos(theta1-theta2)*dtheta1*dtheta2*l1^2*l2*m2*sin(theta1-theta2)+6*dtheta1*dtheta2*l1*l2^2*m2*sin(theta1-theta2)+3*cos(theta1-theta2)*g*l1^2*m1*sin(theta1)+6*cos(theta1-theta2)*g*l1^2*m2*sin(theta1)-2*g*l1^2*m1*sin(theta2)-6*g*l2^2*m2*sin(theta2))
-    d = l2*(2*l1^2*m1-3*l1*l2*m2+6*l2^2*m2)
+    d = l2*(m1+m2*sin(theta1-theta2)^2)
+    n1 = g*(m1+m2)*sin(theta1)*cos(theta1-theta2)
+    n2 = cos(theta1-theta2)*dtheta1*dtheta2*l2*m2*sin(theta1-theta2)
+    n3 = dtheta1*dtheta2*l1*m2*sin(theta1-theta2)
+    n4 = -g*(m1+m2)*sin(theta2)
+    n = (n1+n2+n3+n4)
     return n/d
 end
 
@@ -40,8 +48,12 @@ function y2(theta1,theta2)
 end
 
 function energy(theta1,theta2,dtheta1,dtheta2)
-    ret = (m1*l1^2/6+m2*l1^2/2)*dtheta1^2+m2*l2^2/6*dtheta2^2+m2*l1*l2*dtheta1*dtheta2*cos(theta1-theta2)/2-(m1/2+m2)*g*l1*cos(theta1)-m2/2*g*l2*cos(theta2)
-    return ret
+    T1 = (m1+m2)*l1^2*dtheta1^2/2
+    T2 = m2*l2^2*dtheta2^2/2
+    T3 = m2*l1*l2*dtheta1*dtheta2*cos(theta1-theta2)
+    V1 = -(m1+m2)*g*l1*cos(theta1)
+    V2 = -m2*g*l2*cos(theta2)
+    return (T1+T2+T3+V1+V2)
 end
 
 theta10 = pi/6
@@ -105,13 +117,18 @@ for i in 1:2500
 end
 
 tsprime = [(ts[2*i-1]) for i in 1:2501]
-plot(tsprime,[theta1f,theta2f],title="Double pendulum Frogleap, θ1 & θ2",label = ["θ1" "θ2"])
+plot(tsprime,[theta1f,theta2f],title="Double pendulum Frogleap, theta1 & theta2",label = ["theta1" "theta2"])
 savefig("dpf.pdf")
-plot(tsprime,[theta1f,theta2f],title="Double pendulum Frogleap, θ1_dot & θ2_dot",label = ["θ1_dot" "θ2_dot"])
+plot(tsprime,[theta1f,theta2f],title="Double pendulum Frogleap, theta1_dot & theta2_dot",label = ["theta1_dot" "theta2_dot"])
 savefig("dpfd.pdf")
 
 Ese = [energy(theta1e[2*i-1],theta2e[2*i-1],dtheta1e[2*i-1],dtheta2e[2*i-1])-e0 for i in 1:2501]
 Esf = [energy(theta1f[i],theta2f[i],dtheta1f[i],dtheta2f[i])-e0 for i in 1:2501]
 
-plot(tsprime,[Ese,Esf],title="energy difference",label = ["Euler" "Frogleap"])
+plot(tsprime,[Ese,Esf],title="energy difference, E = -31.7487",label = ["Euler" "Frogleap"])
 savefig("energydp.pdf")
+
+x1s = [x1(theta1) for theta1 in theta1e]
+y1s = [y1(theta1) for theta1 in theta1e]
+
+plot(x1s,y1s)
