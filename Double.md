@@ -24,5 +24,5 @@ $$
 $$
 
 $$
-\ddot{\theta}_2=-\frac{3(-3gl_1m_1\sin{\theta_1}-6gl_1^2m_2\sin{\theta_1}+2gl_1^2m_1\sin{\theta_2}+6gl_2^2m_2\sin{\theta_2})}{2l_2(2l_1^2m_1-3l_1l_2m_2+6l_2^2m_2)}
+\ddot{\theta}_2=-\frac{3(-3gl_1^2m_1\sin{\theta_1}-6gl_1^2m_2\sin{\theta_1}+2gl_1^2m_1\sin{\theta_2}+6gl_2^2m_2\sin{\theta_2})}{2l_2(2l_1^2m_1-3l_1l_2m_2+6l_2^2m_2)}
 $$
