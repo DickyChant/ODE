@@ -11,11 +11,14 @@ l1 = 7.0
 m2 = 3.0
 l2 = 5.0
 
+nt = 50000
+halfnt = Int(nt/2)
+
 function ddtheta1(theta1,theta2,dtheta1,dtheta2)
     d = l1*(m1+m2*sin(theta1-theta2)^2)
     n1 = g*(m1+m2)*sin(theta1)
-    n2 = cos(theta1-theta2)*dtheta1*dtheta2*l1*m2*sin(theta1-theta2)
-    n3 = dtheta1*dtheta2*l2*m2*sin(theta1-theta2)
+    n2 = cos(theta1-theta2)*dtheta1^2*l1*m2*sin(theta1-theta2)
+    n3 = dtheta2^2*l2*m2*sin(theta1-theta2)
     n4 = -cos(theta1-theta2)*g*m2*sin(theta2)
     n = -1 * (n1+n2+n3+n4)
     return n/d
@@ -24,8 +27,8 @@ end
 function ddtheta2(theta1,theta2,dtheta1,dtheta2)
     d = l2*(m1+m2*sin(theta1-theta2)^2)
     n1 = g*(m1+m2)*sin(theta1)*cos(theta1-theta2)
-    n2 = cos(theta1-theta2)*dtheta1*dtheta2*l2*m2*sin(theta1-theta2)
-    n3 = dtheta1*dtheta2*l1*m2*sin(theta1-theta2)
+    n2 = cos(theta1-theta2)*dtheta1^2*l2*m2*sin(theta1-theta2)
+    n3 = dtheta2^2*l1*m2*sin(theta1-theta2)
     n4 = -g*(m1+m2)*sin(theta2)
     n = (n1+n2+n3+n4)
     return n/d
@@ -57,7 +60,7 @@ function energy(theta1,theta2,dtheta1,dtheta2)
 end
 
 theta10 = pi/6
-theta20 = pi/3
+theta20 = 0.0
 dtheta10 = 0.0
 dtheta20 = 0.0
 
@@ -72,7 +75,7 @@ dtheta2e = [dtheta20]
 
 ts = [0.0]
 
-for i in 1:5000
+for i in 1:nt
     
     tmp1 = theta1e[i]
     tmp2 = theta2e[i]
@@ -99,7 +102,7 @@ theta2f = [theta20]
 dtheta1f = [dtheta10]
 dtheta2f = [dtheta20]
 
-for i in 1:2500
+for i in 1:halfnt
     
     tmp1 = theta1f[i]
     tmp2 = theta2f[i]
@@ -116,16 +119,16 @@ for i in 1:2500
     push!(dtheta2f,halfd2+ddtheta2(new1,new2,halfd1,halfd2)*dt)
 end
 
-tsprime = [(ts[2*i-1]) for i in 1:2501]
+tsprime = [(ts[2*i-1]) for i in 1:(halfnt+1)]
 plot(tsprime,[theta1f,theta2f],title="Double pendulum Frogleap, theta1 & theta2",label = ["theta1" "theta2"])
 savefig("dpf.pdf")
-plot(tsprime,[theta1f,theta2f],title="Double pendulum Frogleap, theta1_dot & theta2_dot",label = ["theta1_dot" "theta2_dot"])
+plot(tsprime,[dtheta1f,dtheta2f],title="Double pendulum Frogleap, theta1_dot & theta2_dot",label = ["theta1_dot" "theta2_dot"])
 savefig("dpfd.pdf")
 
-Ese = [energy(theta1e[2*i-1],theta2e[2*i-1],dtheta1e[2*i-1],dtheta2e[2*i-1])-e0 for i in 1:2501]
-Esf = [energy(theta1f[i],theta2f[i],dtheta1f[i],dtheta2f[i])-e0 for i in 1:2501]
+Ese = [energy(theta1e[2*i-1],theta2e[2*i-1],dtheta1e[2*i-1],dtheta2e[2*i-1])-e0 for i in 1:(halfnt+1)]
+Esf = [energy(theta1f[i],theta2f[i],dtheta1f[i],dtheta2f[i])-e0 for i in 1:(halfnt+1)]
 
-plot(tsprime,[Ese,Esf],title="energy difference, E = -31.7487",label = ["Euler" "Frogleap"])
+plot(tsprime,[Ese,Esf],title="energy difference, E = $(e0)",label = ["Euler" "Frogleap"])
 savefig("energydp.pdf")
 
 x1s = [x1(theta1) for theta1 in theta1e]
