@@ -144,6 +144,13 @@ for i in 1:nt
     push!(ts,ts[i]+dt)
 end
 
+plot(ts,[x1e,x2e,x3e],label = ["x1" "x2" "x3"])
+savefig("xs.pdf")
+plot(ts,[y1e,y2e,y3e],label = ["y1" "y2" "y3"])
+savefig("ys.pdf")
+plot(ts,[z1e,z2e,z3e],label = ["z1" "z2" "z3"])
+savefig("zs.pdf")
+
 Ese = [energy(x1e[i],y1e[i],z1e[i],x2e[i],y2e[i],z2e[i],x3e[i],y3e[i],z3e[i],vx1e[i],vy1e[i],vz1e[i],vx2e[i],vy2e[i],vz2e[i],vx3e[i],vy3e[i],vz3e[i],M1,M2,M3)-e0 for i in 1:(nt+1)]
 plot(ts,Ese,xlabel="time",ylabel="absolute error",title="Energy Euler")
 savefig("GravityE.pdf")

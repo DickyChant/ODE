@@ -29,5 +29,5 @@ $$
 $$
 
 $$
-\frac{\dot{\theta}_1^{n+1}-\dot{\theta}_1^{n-1}}{2\Delta t}=1^{st}(\theta_1^{n},\theta_2^{n})
+p_{1}=\frac{\partial L}{\partial \dot{\theta}_1}
 $$

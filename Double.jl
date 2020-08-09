@@ -11,8 +11,8 @@ l1 = 7.0
 m2 = 3.0
 l2 = 5.0
 
-nt = 50000
-halfnt = Int(nt/2)
+halfnt = 25000
+nt = 2*halfnt
 
 function ddtheta1(theta1,theta2,dtheta1,dtheta2)
     d = l1*(m1+m2*sin(theta1-theta2)^2)
@@ -97,36 +97,9 @@ savefig("dped.pdf")
 
 # Frogleap
 
-theta1f = [theta10]
-theta2f = [theta20]
-dtheta1f = [dtheta10]
-dtheta2f = [dtheta20]
 
-for i in 1:halfnt
-    
-    tmp1 = theta1f[i]
-    tmp2 = theta2f[i]
-    tmpd1 = dtheta1f[i]
-    tmpd2 = dtheta2f[i]
-
-    halfd1 = tmpd1 + dt*ddtheta1(tmp1,tmp2,tmpd1,tmpd2)
-    halfd2 = tmpd2 + dt*ddtheta2(tmp1,tmp2,tmpd1,tmpd2)
-    new1 = tmp1+2*dt*halfd1
-    new2 = tmp2+2*dt*halfd2
-    push!(theta1f,new1)
-    push!(theta2f,new2)
-    push!(dtheta1f,halfd1+ddtheta1(new1,new2,halfd1,halfd2)*dt)
-    push!(dtheta2f,halfd2+ddtheta2(new1,new2,halfd1,halfd2)*dt)
-end
-
-tsprime = [(ts[2*i-1]) for i in 1:(halfnt+1)]
-plot(tsprime,[theta1f,theta2f],title="Double pendulum Frogleap, theta1 & theta2",label = ["theta1" "theta2"])
-savefig("dpf.pdf")
-plot(tsprime,[dtheta1f,dtheta2f],title="Double pendulum Frogleap, theta1_dot & theta2_dot",label = ["theta1_dot" "theta2_dot"])
-savefig("dpfd.pdf")
 
 Ese = [energy(theta1e[2*i-1],theta2e[2*i-1],dtheta1e[2*i-1],dtheta2e[2*i-1])-e0 for i in 1:(halfnt+1)]
-Esf = [energy(theta1f[i],theta2f[i],dtheta1f[i],dtheta2f[i])-e0 for i in 1:(halfnt+1)]
 
 plot(tsprime,[Ese,Esf],title="energy difference, E = $(e0)",label = ["Euler" "Frogleap"])
 savefig("energydp.pdf")
